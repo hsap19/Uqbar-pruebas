@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Entrada - Proyecto Uqbar</title>
+    <style>
+        body {
+            background-color: black;
+            color: #b366ff;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+        #console {
+            white-space: pre-wrap;
+            font-size: 18px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: #b366ff;
+            animation: blink 1s steps(1) infinite;
+        }
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+        textarea {
+            width: 33%;
+            height: 100px;
+            background-color: black;
+            color: #b366ff;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid #b366ff;
+            padding: 5px;
+            font-size: 18px;
+            outline: none;
+        }
+        input[type="text"] {
+            background-color: black;
+            color: #b366ff;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid #b366ff;
+            padding: 5px;
+            font-size: 18px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="console"></div>
+    <form id="dataForm" action="https://script.google.com/macros/s/AKfycbx_5Pk27ajRzebnhUKRfPiYnk14NtO8f3cDrgmdxwQfKYB9QUTzVSc2EFI72Io5tn35zQ/exec" method="POST">
+        <textarea name="entryText" id="userInput" placeholder="Escribe aquí tu entrada..." required></textarea>
+        <p>¿Quieres enviar tu entrada? [1] SÍ    [2] VOLVER A PROYECTO UQBAR</p>
+        <input type="text" id="optionInput" name="userOption" required />
+    </form>
+    
+    
+    <script>
+        const consoleDiv = document.getElementById('console');
+        const dataForm = document.getElementById('dataForm');
+        const optionInput = document.getElementById('optionInput');
+        const userInput = document.getElementById('userInput');
+        let typingSpeed = 50;
+        let isMaxSpeed = false;
+    
+        const text = `PROYECTO DE ERÚNTICA UQBAR\n\nCOLABORA\n\nEscribe tu entrada para la ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL en la siguiente caja de texto.\n\nCuando hayas terminado, responde a la pregunta.\n\nNO PODRÁS EDITAR TU ENTRADA, ya que sería un gasto adicional para el limitado servicio de envío intertemporal.\n\n`;
+        
+        let index = 0;
+        function typeText() {
+            if (index < text.length) {
+                consoleDiv.innerHTML += text[index];
+                index++;
+                setTimeout(typeText, typingSpeed);
+            } else {
+                consoleDiv.innerHTML += '<span class="cursor"></span>';
+            }
+        }
+    
+        window.onload = () => {
+            typeText();
+        };
+    
+        dataForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Evita el envío predeterminado del formulario
+    
+            const userOption = optionInput.value.trim();
+            const entryText = userInput.value.trim();
+            
+            if (userOption === '1') {
+                // Enviar los datos a Google Sheets
+                const formData = new FormData();
+                formData.append("entryText", entryText);
+                formData.append("userOption", userOption);
+    
+                try {
+                    let response = await fetch("https://script.google.com/macros/s/AKfycbx_5Pk27ajRzebnhUKRfPiYnk14NtO8f3cDrgmdxwQfKYB9QUTzVSc2EFI72Io5tn35zQ/exec", {
+                        method: "POST",
+                        body: formData,
+                    });
+    
+                    let result = await response.text();
+                    console.log("Respuesta del servidor:", result);
+                    
+                    // Redirigir a la página de confirmación después del envío
+                    window.location.href = "confirmacion.html";
+                } catch (error) {
+                    console.error("Error en el envío:", error);
+                    alert("Hubo un problema al enviar los datos.");
+                }
+    
+            } else if (userOption === '2') {
+                window.location.href = "index.html";
+            }
+        });
+    
+        window.addEventListener('dblclick', () => {
+            isMaxSpeed = !isMaxSpeed;
+            typingSpeed = isMaxSpeed ? 2 : 50;
+        });
+    </script>
+    
+
+
+</body>
+</html>
