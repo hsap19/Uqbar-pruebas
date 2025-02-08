@@ -63,10 +63,10 @@
         const dataForm = document.getElementById('dataForm');
         const optionInput = document.getElementById('optionInput');
         const userInput = document.getElementById('userInput');
-        optionInput.addEventListener("keypress", function(event) {
+        optionInput.addEventListener("keydown", function(event) {
     if (event.key === "Enter") {
-        event.preventDefault(); // Evita que el formulario se envíe de manera predeterminada
-        dataForm.requestSubmit(); // Envía el formulario manualmente
+        event.preventDefault(); // Evita el comportamiento por defecto (como saltar de campo)
+        dataForm.dispatchEvent(new Event("submit")); // Dispara el evento "submit" manualmente
     }
 });
        
