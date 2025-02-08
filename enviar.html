@@ -67,7 +67,7 @@
         let isMaxSpeed = false;
     
         const text = `PROYECTO DE ERÚNTICA UQBAR\n\nCOLABORA\n\nEscribe tu entrada para la ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL en la siguiente caja de texto.\n\nCuando hayas terminado, responde a la pregunta.\n\nNO PODRÁS EDITAR TU ENTRADA, ya que sería un gasto adicional para el limitado servicio de envío intertemporal.\n\n`;
-        
+    
         let index = 0;
         function typeText() {
             if (index < text.length) {
@@ -84,29 +84,37 @@
         };
     
         dataForm.addEventListener('submit', function(event) {
-    event.preventDefault(); // Evita el envío tradicional del formulario
-
-    const userInput = document.getElementById("userInput").value;
-
-    fetch("https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", { // Reemplaza la URL
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ entry: userInput })
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert("Datos enviados correctamente.");
-        window.location.href = "confirmacion.html"; // Redirige tras el envío
-    })
-    .catch(error => console.error("Error en el envío:", error));
-});
-
+            event.preventDefault(); // Evita el envío tradicional del formulario
+    
+            const userInputValue = userInput.value.trim();
+            const optionValue = optionInput.value.trim();
+    
+            // Primero se valida el número ingresado
+            if (optionValue !== "1" && optionValue !== "2") {
+                alert("Por favor, ingresa 1 o 2.");
+                return; // Detiene la ejecución si el valor es incorrecto
+            }
+    
+            // Si la opción es válida, se envían los datos y luego se redirige
+            fetch("https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ entry: userInputValue })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert("Datos enviados correctamente.");
+                window.location.href = optionValue === "1" ? "confirmacion.html" : "index.html";
+            })
+            .catch(error => console.error("Error en el envío:", error));
+        });
     
         window.addEventListener('dblclick', () => {
             isMaxSpeed = !isMaxSpeed;
             typingSpeed = isMaxSpeed ? 2 : 50;
         });
     </script>
+    
     
 
 
