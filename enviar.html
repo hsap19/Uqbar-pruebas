@@ -58,7 +58,7 @@
     </form>
     
     
- <script>
+<script>
     const consoleDiv = document.getElementById('console');
     const dataForm = document.getElementById('dataForm');
     const optionInput = document.getElementById('optionInput');
@@ -83,15 +83,13 @@
         typeText();
     };
 
-    // **Detectar cuando el usuario presiona "Enter" en la segunda caja de texto**
     optionInput.addEventListener("keypress", function(event) {
         if (event.key === "Enter") {
-            event.preventDefault(); // Evita el envío por defecto
-            processForm(); // Llama a la función que maneja el formulario
+            event.preventDefault();
+            processForm();
         }
     });
 
-    // **Manejar el envío del formulario**
     function processForm() {
         const userInputValue = userInput.value.trim();
         const optionValue = optionInput.value.trim();
@@ -106,11 +104,15 @@
             return;
         }
 
-        // **Enviar datos usando CORS Anywhere como proxy**
-        fetch("https://cors-anywhere.herokuapp.com/https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
+        // **Enviar datos como un arreglo de objetos**
+        const formattedData = [
+            { entry: userInputValue } // Convertir a un array de objetos
+        ];
+
+        fetch("https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ entry: userInputValue }) // Clave "entry" con el texto del usuario
+            body: JSON.stringify(formattedData) // Enviar el arreglo
         })
         .then(response => {
             if (response.ok) {
@@ -121,15 +123,14 @@
         })
         .catch(error => console.error("Error en el envío:", error));
 
-        // **Redirigir de inmediato**
         setTimeout(() => {
             window.location.href = optionValue === "1" ? "confirmacion.html" : "index.html";
-        }, 100); // Pequeño retraso para asegurar compatibilidad en algunos navegadores
+        }, 100);
     }
 
     dataForm.addEventListener('submit', function(event) {
-        event.preventDefault(); // Evita el envío tradicional
-        processForm(); // Llama a la misma función que se ejecuta con "Enter"
+        event.preventDefault();
+        processForm();
     });
 
     window.addEventListener('dblclick', () => {
