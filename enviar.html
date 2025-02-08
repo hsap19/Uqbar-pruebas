@@ -58,7 +58,7 @@
     </form>
     
     
-  <script>
+ <script>
     const consoleDiv = document.getElementById('console');
     const dataForm = document.getElementById('dataForm');
     const optionInput = document.getElementById('optionInput');
@@ -106,8 +106,8 @@
             return;
         }
 
-        // **Enviar datos como objeto JSON estructurado**
-        fetch("https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
+        // **Enviar datos usando CORS Anywhere como proxy**
+        fetch("https://cors-anywhere.herokuapp.com/https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ entry: userInputValue }) // Clave "entry" con el texto del usuario
@@ -137,9 +137,7 @@
         typingSpeed = isMaxSpeed ? 2 : 50;
     });
 </script>
-
-
-    
+   
 
 </body>
 </html>
