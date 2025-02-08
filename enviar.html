@@ -63,13 +63,6 @@
         const dataForm = document.getElementById('dataForm');
         const optionInput = document.getElementById('optionInput');
         const userInput = document.getElementById('userInput');
-        optionInput.addEventListener("keydown", function(event) {
-    if (event.key === "Enter") {
-        event.preventDefault(); // Evita el comportamiento por defecto (como saltar de campo)
-        dataForm.dispatchEvent(new Event("submit")); // Dispara el evento "submit" manualmente
-    }
-});
-       
         let typingSpeed = 50;
         let isMaxSpeed = false;
     
@@ -90,30 +83,40 @@
             typeText();
         };
     
-        dataForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Evita el envío tradicional del formulario
+        // **Detectar cuando el usuario presiona "Enter" en la segunda caja de texto**
+        optionInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault(); // Evita el envío por defecto
+                processForm(); // Llama a la función que maneja el formulario
+            }
+        });
     
+        // **Manejar el envío del formulario**
+        function processForm() {
             const userInputValue = userInput.value.trim();
             const optionValue = optionInput.value.trim();
     
-            // Primero se valida el número ingresado
             if (optionValue !== "1" && optionValue !== "2") {
                 alert("Por favor, ingresa 1 o 2.");
-                return; // Detiene la ejecución si el valor es incorrecto
+                return;
             }
     
-            // Si la opción es válida, se envían los datos y luego se redirige
+            // **Enviar datos sin bloquear la redirección**
             fetch("https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ entry: userInputValue })
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert("Datos enviados correctamente.");
+            }).catch(error => console.error("Error en el envío:", error));
+    
+            // **Redirigir de inmediato**
+            setTimeout(() => {
                 window.location.href = optionValue === "1" ? "confirmacion.html" : "index.html";
-            })
-            .catch(error => console.error("Error en el envío:", error));
+            }, 100); // Pequeño retraso para asegurar compatibilidad en algunos navegadores
+        }
+    
+        dataForm.addEventListener('submit', function(event) {
+            event.preventDefault(); // Evita el envío tradicional
+            processForm(); // Llama a la misma función que se ejecuta con "Enter"
         });
     
         window.addEventListener('dblclick', () => {
@@ -122,8 +125,6 @@
         });
     </script>
     
-    
-
 
 </body>
 </html>
