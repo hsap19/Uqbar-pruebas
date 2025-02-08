@@ -58,72 +58,73 @@
     </form>
     
     
-    <script>
-        const consoleDiv = document.getElementById('console');
-        const dataForm = document.getElementById('dataForm');
-        const optionInput = document.getElementById('optionInput');
-        const userInput = document.getElementById('userInput');
-        let typingSpeed = 50;
-        let isMaxSpeed = false;
-    
-        const text = `PROYECTO DE ERÚNTICA UQBAR\n\nCOLABORA\n\nEscribe tu entrada para la ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL en la siguiente caja de texto.\n\nCuando hayas terminado, responde a la pregunta.\n\nNO PODRÁS EDITAR TU ENTRADA, ya que sería un gasto adicional para el limitado servicio de envío intertemporal.\n\n`;
-    
-        let index = 0;
-        function typeText() {
-            if (index < text.length) {
-                consoleDiv.innerHTML += text[index];
-                index++;
-                setTimeout(typeText, typingSpeed);
-            } else {
-                consoleDiv.innerHTML += '<span class="cursor"></span>';
-            }
+   <script>
+    const consoleDiv = document.getElementById('console');
+    const dataForm = document.getElementById('dataForm');
+    const optionInput = document.getElementById('optionInput');
+    const userInput = document.getElementById('userInput');
+    let typingSpeed = 50;
+    let isMaxSpeed = false;
+
+    const text = `PROYECTO DE ERÚNTICA UQBAR\n\nCOLABORA\n\nEscribe tu entrada para la ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL en la siguiente caja de texto.\n\nCuando hayas terminado, responde a la pregunta.\n\nNO PODRÁS EDITAR TU ENTRADA, ya que sería un gasto adicional para el limitado servicio de envío intertemporal.\n\n`;
+
+    let index = 0;
+    function typeText() {
+        if (index < text.length) {
+            consoleDiv.innerHTML += text[index];
+            index++;
+            setTimeout(typeText, typingSpeed);
+        } else {
+            consoleDiv.innerHTML += '<span class="cursor"></span>';
         }
-    
-        window.onload = () => {
-            typeText();
-        };
-    
-        // **Detectar cuando el usuario presiona "Enter" en la segunda caja de texto**
-        optionInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault(); // Evita el envío por defecto
-                processForm(); // Llama a la función que maneja el formulario
-            }
-        });
-    
-        // **Manejar el envío del formulario**
-        function processForm() {
-            const userInputValue = userInput.value.trim();
-            const optionValue = optionInput.value.trim();
-    
-            if (optionValue !== "1" && optionValue !== "2") {
-                alert("Por favor, ingresa 1 o 2.");
-                return;
-            }
-    
-            // **Enviar datos sin bloquear la redirección**
-            fetch("https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ entry: userInputValue })
-            }).catch(error => console.error("Error en el envío:", error));
-    
-            // **Redirigir de inmediato**
-            setTimeout(() => {
-                window.location.href = optionValue === "1" ? "confirmacion.html" : "index.html";
-            }, 100); // Pequeño retraso para asegurar compatibilidad en algunos navegadores
+    }
+
+    window.onload = () => {
+        typeText();
+    };
+
+    // **Detectar cuando el usuario presiona "Enter" en la segunda caja de texto**
+    optionInput.addEventListener("keypress", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Evita el envío por defecto
+            processForm(); // Llama a la función que maneja el formulario
         }
-    
-        dataForm.addEventListener('submit', function(event) {
-            event.preventDefault(); // Evita el envío tradicional
-            processForm(); // Llama a la misma función que se ejecuta con "Enter"
-        });
-    
-        window.addEventListener('dblclick', () => {
-            isMaxSpeed = !isMaxSpeed;
-            typingSpeed = isMaxSpeed ? 2 : 50;
-        });
-    </script>
+    });
+
+    // **Manejar el envío del formulario**
+    function processForm() {
+        const userInputValue = userInput.value.trim();
+        const optionValue = optionInput.value.trim();
+
+        if (optionValue !== "1" && optionValue !== "2") {
+            alert("Por favor, ingresa 1 o 2.");
+            return;
+        }
+
+        // **Enviar datos usando cors-anywhere**
+        fetch("https://cors-anywhere.herokuapp.com/https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ entry: userInputValue })
+        }).catch(error => console.error("Error en el envío:", error));
+
+        // **Redirigir de inmediato**
+        setTimeout(() => {
+            window.location.href = optionValue === "1" ? "confirmacion.html" : "index.html";
+        }, 100); // Pequeño retraso para asegurar compatibilidad en algunos navegadores
+    }
+
+    dataForm.addEventListener('submit', function(event) {
+        event.preventDefault(); // Evita el envío tradicional
+        processForm(); // Llama a la misma función que se ejecuta con "Enter"
+    });
+
+    window.addEventListener('dblclick', () => {
+        isMaxSpeed = !isMaxSpeed;
+        typingSpeed = isMaxSpeed ? 2 : 50;
+    });
+</script>
+
     
 
 </body>
