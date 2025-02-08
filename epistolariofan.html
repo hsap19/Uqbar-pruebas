@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio especulativo</title>
+    <style>
+        body {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+        #console {
+            white-space: pre-wrap;
+            font-size: 18px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: green;
+            animation: blink 1s steps(1) infinite;
+        }
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            51%, 100% {
+                opacity: 0;
+            }
+        }
+        h1 {
+            font-size: 50px;
+            font-weight: bold;
+        }
+        .subtitle {
+            font-size: 24px;
+            font-weight: bold;
+            color: lime;
+            margin-bottom: 10px;
+        }
+        .description {
+            font-size: 16px;
+            color: lightgreen;
+            margin-bottom: 20px;
+            text-align: justify;
+            margin-left: 40px;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .links a {
+            color: lightblue;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        #userInput {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid green;
+            padding: 5px;
+            font-size: 18px;
+            outline: none;
+            width: calc(100% - 12px);
+        }
+        .input-container {
+            margin-bottom: 10px;
+        }
+        .input-container textarea {
+            width: calc(100% - 12px);
+            height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <audio id="background-music" src="SeaWallEDIT.mp3" loop></audio>
+    <div id="content" style="display: none;">
+        <h1>PROYECTO DE ERÚNTICA UQBAR</h1>
+        <h2 class="subtitle">Fanmail crononauta</h2>
+        <img src="loading_circle.gif.gif" alt="Cargando">
+        <p class="description">
+Doble clic [musica ON/OFF]<br><br>
+            La Universidad Atomizada de Investigadorxs Independientes se complace en presentar el FANMAIL CRONONAUTA. <br>
+            Por este medio puedes dirigir mensajes breves a escritores y artistas a través del tiempo. <br>
+            Sólo debes escribir tu mensaje y se enviará a través del PORTAL INTERTEMPORAL del Proyecto de Erúntica Uqbar.
+            El corresponsal más cercano a tu línea de tiempo lo recibirá y lo remitirá al tiempo del escritor.<br> <br>
+            FAVOR DE TOMAR EN CUENTA QUE:<br>
+            - Dados los limitados recursos electrónicos de la era postelectrónica, el Proyecto de Erúntica Uqbar no puede asegurar la entrega del mensaje al destinatario.<br>
+            - A mayor distancia temporal entre el remitente y el destinatario, mayor necesidad de recursos para la entrega.<br>
+            - Los envíos dependen de la disponibilidad de corresponsales en cada punto del tiempo, así como de la vigilancia intertemporal de agencias ajenas a la Universidad Atomizada de Investigadorxs Independientes.
+
+        </p>
+        <h3>UQBAR: ¿Quieres enviar un MENSAJE INTERTEMPORAL a un escritor o artista? [SÍ] [NO]</h3>
+    </div>
+    <div id="console"></div>
+    <input type="text" id="userInput" style="display: none;" />
+    <script>
+        const content = document.getElementById('content').innerHTML;
+        const consoleDiv = document.getElementById('console');
+        const userInput = document.getElementById('userInput');
+        const backgroundMusic = document.getElementById('background-music');
+        let index = 0;
+        let isMusicPlaying = false;
+
+        function blinkCursor(times, callback) {
+            let blinks = 0;
+            const interval = setInterval(() => {
+                if (blinks < times) {
+                    consoleDiv.innerHTML = (blinks % 2 === 0) ? '<span class="cursor"></span>' : '';
+                    blinks++;
+                } else {
+                    clearInterval(interval);
+                    callback();
+                }
+            }, 500);
+        }
+
+        function typeText() {
+            if (index < content.length) {
+                if (content[index] === '<') {
+                    let tag = '';
+                    while (content[index] !== '>' && index < content.length) {
+                        tag += content[index];
+                        index++;
+                    }
+                    tag += '>';
+                    consoleDiv.innerHTML += tag;
+                    index++;
+                } else {
+                    if (content[index] === '&') {
+                        let entity = '';
+                        while (content[index] !== ';' && index < content.length) {
+                            entity += content[index];
+                            index++;
+                        }
+                        entity += ';';
+                        consoleDiv.innerHTML += entity;
+                        index++;
+                    } else {
+                        consoleDiv.innerHTML += content[index];
+                        index++;
+                    }
+                }
+                setTimeout(typeText, 50);
+            } else {
+                consoleDiv.innerHTML += '<span class="cursor"></span>';
+                showInputPrompt();
+            }
+        }
+
+        function showInputPrompt() {
+            consoleDiv.innerHTML += "\nINPUT: RESPUESTA";
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleInput);
+        }
+
+        function handleInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim().toUpperCase();
+                userInput.removeEventListener('keypress', handleInput);
+                userInput.style.display = "none";
+                processResponse(userResponse);
+            }
+        }
+
+        function processResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            if (response === 'SÍ' || response === 'SI' || response === 'YES') {
+                consoleDiv.innerHTML += "\nUQBAR: Tu mensaje debe contener máximo 100 palabras.";
+                showMessageForm();
+            } else if (response === 'NO' || response === 'NO') {
+                consoleDiv.innerHTML += "\nUQBAR: ¡Gracias por visitar el Fanmail Crononauta!";
+                showInputPrompt();
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. POR FAVOR INTENTA DE NUEVO.";
+                showInputPrompt();
+            }
+        }
+
+        function showMessageForm() {
+            consoleDiv.innerHTML += `
+                <div class="input-container">
+                    <label for="userName">NOMBRE DEL USUARIO:</label>
+                    <input type="text" id="userName" />
+                </div>
+                <div class="input-container">
+                    <label for="recipientName">NOMBRE DEL DESTINATARIO:</label>
+                    <input type="text" id="recipientName" />
+                </div>
+                <div class="input-container">
+                    <label for="deliveryYear">AÑO DE ENTREGA O EDAD DEL DESTINATARIO:</label>
+                    <input type="text" id="deliveryYear" />
+                </div>
+                <div class="input-container">
+                    <label for="userMessage">TU MENSAJE:</label>
+                    <textarea id="userMessage" maxlength="600"></textarea>
+                </div>
+                <button onclick="submitMessage()">ENVIAR MENSAJE</button>
+            `;
+        }
+
+        function submitMessage() {
+            const userName = document.getElementById('userName').value;
+            const recipientName = document.getElementById('recipientName').value;
+            const deliveryYear = document.getElementById('deliveryYear').value;
+            const userMessage = document.getElementById('userMessage').value;
+            if (userName && recipientName && deliveryYear && userMessage) {
+                consoleDiv.innerHTML += `
+                    \nUQBAR: Mensaje enviado con éxito.
+                    \nNOMBRE DEL USUARIO: ${userName}
+                    \nNOMBRE DEL DESTINATARIO: ${recipientName}
+                    \nAÑO DE ENTREGA O EDAD DEL DESTINATARIO: ${deliveryYear}
+                    \nTU MENSAJE: ${userMessage}
+                `;
+            } else {
+                consoleDiv.innerHTML += "\nUQBAR: Todos los campos son obligatorios. Por favor completa el formulario.";
+                showMessageForm();
+            }
+        }
+
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                backgroundMusic.pause();
+            } else {
+                backgroundMusic.play();
+            }
+            isMusicPlaying = !isMusicPlaying;
+        }
+
+        window.onload = () => {
+            backgroundMusic.play().catch(error => {
+                console.log('Autoplay prevented:', error);
+                document.addEventListener('click', () => {
+                    backgroundMusic.play();
+                }, { once: true });
+            });
+            blinkCursor(6, typeText);
+        };
+
+        document.body.addEventListener('dblclick', toggleMusic);
+    </script>
+</body>
+</html>

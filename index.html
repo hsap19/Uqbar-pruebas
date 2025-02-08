@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proyecto Uqbar</title>
+    <style>
+        body {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+        #console {
+            white-space: pre-wrap;
+            font-size: 18px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: green;
+            animation: blink 1s steps(1) infinite;
+        }
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            51%, 100% {
+                opacity: 0;
+            }
+        }
+        h1 {
+            font-size: 50px; /* Tamaño más grande para el título */
+            font-weight: bold; /* Negritas para el título */
+        }
+        .subtitle {
+            font-size: 24px; /* Tamaño intermedio para el subtítulo */
+            font-weight: bold; /* Negritas para el subtítulo */
+            color: lime;
+            margin-bottom: 10px;
+        }
+        .description {
+            font-size: 16px;
+            color: lightgreen;
+            margin-bottom: 20px;
+            text-align: justify;
+            margin-left: 40px;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links ul {
+            list-style-type: disc;
+            padding-left: 20px;
+            display: none; /* Oculta las viñetas */
+        }
+        .links a {
+            color: lightblue;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        #userInput {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid green;
+            padding: 5px;
+            font-size: 18px;
+            outline: none;
+            width: calc(100% - 12px);
+        }
+    </style>
+</head>
+<body>
+    <div id="content" style="display: none;">
+        <h1>PROYECTO DE ERÚNTICA UQBAR</h1> <!-- Título principal -->
+        <h2 class="subtitle">[Traducción de la lengua ubicua al español, dialecto MX2024,Terra-1 por Héctor Sapiña]</h2> <!-- Subtítulo -->
+        
+        <!-- Aquí se inserta el GIF -->
+        <img src="loading_circle.gif.gif" alt="Cargando">
+        <p class="description">
+    Doble clic [acelera animación]<br><br>
+
+        El PROYECTO DE ERÚNTICA UQBAR se fundó en el año 2133 (línea temporal Terra-1).
+        Tiene como objetivo establecer ENLACES INTERTEMPORALES con puntos específicos de la(s) historia(s)
+        a fin de recuperar conocimientos de eras pasadas.       <br>
+        El proyecto nació por iniciativa de la Universidad Atomizada de Investigadorxs Indepedientes 
+        tras LA RECONEXIÓN.    
+        Hasta el año 2136 (T-1) se han desarrollado tres iniciativas, cuyos productos ahora están disponibles 
+        para el público desde 2024 (T-1): <br>
+        
+        1. ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL
+        2. EPISTOLARIO CRONONAUTA
+        3. FANMAIL CRONONAUTA
+        4. CRÉDITOS Y AGRADECIMIENTOS INTERTEMPORALES
+
+        </p>
+        <h3>UQBAR: ¿Quieres saber más sobre las iniciativas del PROYECTO DE ERÚNTICA UQBAR?</h3>
+    </div>
+    <div id="console"></div>
+    <input type="text" id="userInput" style="display: none;" />
+    <script>
+        const content = document.getElementById('content').innerHTML;
+        const consoleDiv = document.getElementById('console');
+        const userInput = document.getElementById('userInput');
+        let index = 0;
+        let typingSpeed = 50;
+        let maxSpeed = 2;
+        let normalSpeed = 50;
+        let isMaxSpeed = false;
+
+        function blinkCursor(times, callback) {
+            let blinks = 0;
+            const interval = setInterval(() => {
+                if (blinks < times) {
+                    consoleDiv.innerHTML = (blinks % 2 === 0) ? '<span class="cursor"></span>' : '';
+                    blinks++;
+                } else {
+                    clearInterval(interval);
+                    callback();
+                }
+            }, 500);
+        }
+
+        function typeText() {
+            if (index < content.length) {
+                if (content[index] === '<') {
+                    let tag = '';
+                    while (content[index] !== '>' && index < content.length) {
+                        tag += content[index];
+                        index++;
+                    }
+                    tag += '>';
+                    consoleDiv.innerHTML += tag;
+                    index++;
+                } else {
+                    if (content[index] === '&') {
+                        let entity = '';
+                        while (content[index] !== ';' && index < content.length) {
+                            entity += content[index];
+                            index++;
+                        }
+                        entity += ';';
+                        consoleDiv.innerHTML += entity;
+                        index++;
+                    } else {
+                        consoleDiv.innerHTML += content[index];
+                        index++;
+                    }
+                }
+                setTimeout(typeText, typingSpeed); // Ajusta el tiempo para cambiar la velocidad de tecleo
+            } else {
+                consoleDiv.innerHTML += '<span class="cursor"></span>';
+                showInputPrompt();
+            }
+        }
+
+        function showInputPrompt() {
+            consoleDiv.innerHTML += "\nINPUT: RESPUESTA";
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleInput);
+        }
+
+        function handleInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim().toUpperCase();
+                userInput.removeEventListener('keypress', handleInput);
+                userInput.style.display = "none";
+                processResponse(userResponse);
+            }
+        }
+
+        function processResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            if (response === 'SÍ' || response === 'SI' || response === 'YES') {
+                consoleDiv.innerHTML += "\nUQBAR: ¿Qué iniciativa quieres explorar? \n[1] LABORATORIO ESPECULATIVO. [Colabora con la _ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL_] \n[2] EPISTOLARIO CRONONAUTA. \n[3] FANMAIL CRONONAUTA. \n[4] CRÉDITOS Y AGRADECIMIENTOS INTERTEMPORALES.";
+                showInputPromptForTool();
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. POR FAVOR INTENTA DE NUEVO.";
+                showInputPrompt();
+            }
+        }
+
+        function showInputPromptForTool() {
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleToolInput);
+        }
+
+        function handleToolInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim();
+                userInput.removeEventListener('keypress', handleToolInput);
+                userInput.style.display = "none";
+                processToolResponse(userResponse);
+            }
+        }
+
+        function processToolResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            const normalizedResponse = response.trim().toLowerCase();
+            if (normalizedResponse === '1') {
+                window.location.href = "laboratorio.html";
+            } else if (normalizedResponse === '2') {
+                window.location.href = "crononauta.html";
+            } else if (normalizedResponse === '3') {
+                window.location.href = "fanmail.html";
+            } else if (normalizedResponse === '4') {
+                window.location.href = "creditos.html";
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. POR FAVOR INTENTA DE NUEVO.";
+                showInputPromptForTool();
+            }
+        }
+
+        window.onload = () => {
+            blinkCursor(6, typeText);
+        };
+
+        window.addEventListener('dblclick', () => {
+            isMaxSpeed = !isMaxSpeed;
+            typingSpeed = isMaxSpeed ? maxSpeed : normalSpeed;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio especulativo</title>
+    <style>
+        body {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+        #console {
+            white-space: pre-wrap;
+            font-size: 18px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: green;
+            animation: blink 1s steps(1) infinite;
+        }
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            51%, 100% {
+                opacity: 0;
+            }
+        }
+        h1 {
+            font-size: 50px; /* Tamaño más grande para el título */
+            font-weight: bold; /* Negritas para el título */
+        }
+        .subtitle {
+            font-size: 24px; /* Tamaño intermedio para el subtítulo */
+            font-weight: bold; /* Negritas para el subtítulo */
+            color: lime;
+            margin-bottom: 10px;
+        }
+        .description {
+            font-size: 16px;
+            color: lightgreen;
+            margin-bottom: 20px;
+            text-align: justify;
+            margin-left: 40px;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .links a {
+            color: lightblue;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        #userInput {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid green;
+            padding: 5px;
+            font-size: 18px;
+            outline: none;
+            width: calc(100% - 12px);
+        }
+    </style>
+</head>
+<body ondblclick="toggleSpeed()">
+    <div id="content" style="display: none;">
+        <h1>PROYECTO DE ERÚNTICA UQBAR</h1> <!-- Título principal -->
+        <h2 class="subtitle">Epistolario crononauta</h2> <!-- Subtítulo -->
+        <!-- Aquí se inserta el GIF -->
+        <img src="loading_circle.gif" alt="Cargando">
+        <p class="description">
+Doble clic [acelera animación]<br><br>
+
+            En estas entradas se recogen los documentos hasta ahora rescatados del archivo de 
+        la Secretaría de Asuntos Crónicos del Gobierno de México, disuelta en el año 2052 (Terra-1).<br>
+        Actualmente la Universidad Atomizada de Investigadorxs Independientes sólo ha recuperado 
+        documentos del archivo CFM.Autores.TXT que fueron publicados de forma interrumpida en el periodo de 
+        la PRIMERA PANDEMIA, en el albor de LA ÚLTIMA ERA NACIONAL.
+        </p>
+        <h3>UQBAR: ¿Quieres consultar las entradas del Epistolario? [SÍ] [NO]</h3>
+    </div>
+    <div id="console"></div>
+    <input type="text" id="userInput" style="display: none;" />
+    <script>
+        const content = document.getElementById('content').innerHTML;
+        const consoleDiv = document.getElementById('console');
+        const userInput = document.getElementById('userInput');
+        let index = 0;
+        let typingSpeed = 50; // Velocidad predeterminada
+
+        function blinkCursor(times, callback) {
+            let blinks = 0;
+            const interval = setInterval(() => {
+                if (blinks < times) {
+                    consoleDiv.innerHTML = (blinks % 2 === 0) ? '<span class="cursor"></span>' : '';
+                    blinks++;
+                } else {
+                    clearInterval(interval);
+                    callback();
+                }
+            }, 500);
+        }
+
+        function typeText() {
+            if (index < content.length) {
+                if (content[index] === '<') {
+                    let tag = '';
+                    while (content[index] !== '>' && index < content.length) {
+                        tag += content[index];
+                        index++;
+                    }
+                    tag += '>';
+                    consoleDiv.innerHTML += tag;
+                    index++;
+                } else {
+                    if (content[index] === '&') {
+                        let entity = '';
+                        while (content[index] !== ';' && index < content.length) {
+                            entity += content[index];
+                            index++;
+                        }
+                        entity += ';';
+                        consoleDiv.innerHTML += entity;
+                        index++;
+                    } else {
+                        consoleDiv.innerHTML += content[index];
+                        index++;
+                    }
+                }
+                setTimeout(typeText, typingSpeed); // Ajusta el tiempo para cambiar la velocidad de tecleo
+            } else {
+                consoleDiv.innerHTML += '<span class="cursor"></span>';
+                showInputPrompt();
+            }
+        }
+
+        function showInputPrompt() {
+            consoleDiv.innerHTML += "\nINPUT: RESPUESTA";
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleInput);
+        }
+
+        function handleInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim().toUpperCase();
+                userInput.removeEventListener('keypress', handleInput);
+                userInput.style.display = "none";
+                processResponse(userResponse);
+            }
+        }
+
+        function processResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            if (response === 'SÍ' || response === 'SI' || response === 'YES') {
+                consoleDiv.innerHTML += "\nUQBAR: Aquí tienes el índice. Elige el archivo que quieres consultar. \n[1] AMADO NERVO \n[2] ALBERTO CHIMAL \n[3] FEDERICO SCHAFFLER \n[4] RENÉ REBETEZ Y ALEXANDRO JODOROWSKY \n[5] MEXICONA \n[6] OLIVIA TEROBA \n[7] RAFAEL ALVAZÁLEZ \n[8] Consultar la publicación original de las primeras entradas. \n[0] REGRESAR A LA PÁGINA PRINCIPAL.";
+                showInputPromptForTool();
+            } else if (response === '0' || response === 'REGRESAR A LA PÁGINA PRINCIPAL') {
+                window.location.href = 'index.html';
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. POR FAVOR INTENTA DE NUEVO.";
+                showInputPrompt();
+            }
+        }
+
+        function showInputPromptForTool() {
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleToolInput);
+        }
+
+        function handleToolInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim();
+                userInput.removeEventListener('keypress', handleToolInput);
+                userInput.style.display = "none";
+                processToolResponse(userResponse);
+            }
+        }
+
+        function processToolResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            if (response === '1') {
+                consoleDiv.innerHTML += "\nENTRADA 1: AMADO NERVO: <a href='' target='_blank'>";
+            } else if (response === '2') {
+                consoleDiv.innerHTML += "\nENTRADA 2: ALBERTO CHIMAL: <a href='' target='_blank'>";
+            } else if (response === '8') {
+                consoleDiv.innerHTML += "\nEPISTOLARIO CRONONAUTA en ESPORA: <a href='https://espora.udlap.mx/category/pergola/epistolario-crononauta/' target='_blank'>https://espora.udlap.mx/category/pergola/epistolario-crononauta/</a>";
+            } else if (response === '0' || response === 'REGRESAR A LA PÁGINA PRINCIPAL') {
+                window.location.href = 'index.html';
+            } else if (response === '3') {
+                consoleDiv.innerHTML += "\nENTRADA 3: FEDERICO SCHAFFLER: <a href='' target='_blank'>";
+            } else if (response === '4') {
+                consoleDiv.innerHTML += "\nENTRADA 4: RENÉ REBETEZ Y ALEXANDRO JODOROWSKY: <a href='' target='_blank'>";
+            } else if (response === '5') {
+                consoleDiv.innerHTML += "\nENTRADA 5: MEXICONA: <a href='' target='_blank'>";
+            } else if (response === '6') {
+                consoleDiv.innerHTML += "\nENTRADA 6: OLIVIA TEROBA: <a href='' target='_blank'>";
+            } else if (response === '7') {
+                consoleDiv.innerHTML += "\nENTRADA 7: RAFAEL ALVAZÁLEZ: <a href='' target='_blank'>";           
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. POR FAVOR INTENTA DE NUEVO.";
+                showInputPromptForTool();
+            }
+
+            // Nueva pregunta después de procesar la respuesta
+            setTimeout(() => {
+                consoleDiv.innerHTML += "\n¿Quieres consultar otra entrada? [SÍ] [NO]";
+                showInputPromptForAnotherEntry();
+            }, 1000);
+        }
+
+        function showInputPromptForAnotherEntry() {
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleAnotherEntryInput);
+        }
+
+        function handleAnotherEntryInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim().toUpperCase();
+                userInput.removeEventListener('keypress', handleAnotherEntryInput);
+                userInput.style.display = "none";
+                processAnotherEntryResponse(userResponse);
+            }
+        }
+
+        function processAnotherEntryResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            if (response === 'SÍ' || response === 'SI' || response === 'YES') {
+                consoleDiv.innerHTML += "\nUQBAR: ¿Quieres consultar las entradas del Epistolario? [SÍ] [NO]";
+                showInputPrompt();
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. INTENTA DE NUEVO.";
+                showInputPromptForAnotherEntry();
+            }
+        }
+
+        function toggleSpeed() {
+            typingSpeed = (typingSpeed === 50) ? 2 : 50; // Alterna entre la velocidad normal y la máxima velocidad
+        }
+
+        window.onload = () => {
+            blinkCursor(6, typeText);
+        };
+    </script>
+</body>
+</html>

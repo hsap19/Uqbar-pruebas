@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratorio especulativo</title>
+    <style>
+        body {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 20px;
+        }
+        #console {
+            white-space: pre-wrap;
+            font-size: 18px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 20px;
+            background-color: green;
+            animation: blink 1s steps(1) infinite;
+        }
+        @keyframes blink {
+            0%, 50% {
+                opacity: 1;
+            }
+            51%, 100% {
+                opacity: 0;
+            }
+        }
+        h1 {
+            font-size: 50px; /* Tamaño más grande para el título */
+            font-weight: bold; /* Negritas para el título */
+        }
+        .subtitle {
+            font-size: 24px; /* Tamaño intermedio para el subtítulo */
+            font-weight: bold; /* Negritas para el subtítulo */
+            color: lime;
+            margin-bottom: 10px;
+        }
+        .description {
+            font-size: 16px;
+            color: lightgreen;
+            margin-bottom: 20px;
+            text-align: justify;
+            margin-left: 40px;
+        }
+        .links {
+            margin-top: 20px;
+        }
+        .links ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .links a {
+            color: lightblue;
+            text-decoration: none;
+        }
+        .links a:hover {
+            text-decoration: underline;
+        }
+        #userInput {
+            background-color: black;
+            color: green;
+            font-family: 'Courier New', Courier, monospace;
+            border: 1px solid green;
+            padding: 5px;
+            font-size: 18px;
+            outline: none;
+            width: calc(100% - 12px);
+        }
+    </style>
+</head>
+<body>
+    <div id="content" style="display: none;">
+        <h1>PROYECTO DE ERÚNTICA UQBAR</h1> <!-- Título principal -->
+        <h2 class="subtitle">Laboratorio especulativo</h2> <!-- Subtítulo -->
+        <!-- Aquí se inserta el GIF -->
+        <img src="loading_circle.gif" alt="Cargando">
+        <p class="description">
+        Doble clic [acelera animación] <br>
+
+            La _ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL_ es un trabajo
+            coordinado por R. Ánimas et la Universidad Atomizada de Investigadorxs
+            Independientes en el año 2136 (línea temporal Terra-1) dentro del Proyecto
+            de Erúntica Uqbar. A través de enlaces intertemporales colocados en
+            diferentes décadas, los coordinadores de la enciclopedia reciben
+            colaboraciones desde puntos específicos de la(s) historia(s). <br>
+            
+            Si deseas colaborar con la enciclopedia, puedes usar las herramientas de este laboratorio. <br>
+            
+            Los textos que elabores serán enviados al corresponsal del proyecto en el
+            año 2023 y elle los remitirá al equipo del profesor Ánimas en 2136 Terra-1
+            para su dictaminación e inclusión en la _ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL_.
+        </p>
+        <h3>UQBAR: ¿Quieres utilizar las herramientas del laboratorio? (Requiere usuario de Chat GPT) [SÍ] [NO]</h3>
+    </div>
+    <div id="console"></div>
+    <input type="text" id="userInput" style="display: none;" />
+    <script>
+        const content = document.getElementById('content').innerHTML;
+        const consoleDiv = document.getElementById('console');
+        const userInput = document.getElementById('userInput');
+        let index = 0;
+        let typingSpeed = 50; // Velocidad de tecleo predeterminada
+        let fastSpeed = 2; // Velocidad rápida
+        let isFast = false;
+
+        function blinkCursor(times, callback) {
+            let blinks = 0;
+            const interval = setInterval(() => {
+                if (blinks < times) {
+                    consoleDiv.innerHTML = (blinks % 2 === 0) ? '<span class="cursor"></span>' : '';
+                    blinks++;
+                } else {
+                    clearInterval(interval);
+                    callback();
+                }
+            }, 500);
+        }
+
+        function typeText() {
+            if (index < content.length) {
+                if (content[index] === '<') {
+                    let tag = '';
+                    while (content[index] !== '>' && index < content.length) {
+                        tag += content[index];
+                        index++;
+                    }
+                    tag += '>';
+                    consoleDiv.innerHTML += tag;
+                    index++;
+                } else {
+                    if (content[index] === '&') {
+                        let entity = '';
+                        while (content[index] !== ';' && index < content.length) {
+                            entity += content[index];
+                            index++;
+                        }
+                        entity += ';';
+                        consoleDiv.innerHTML += entity;
+                        index++;
+                    } else {
+                        consoleDiv.innerHTML += content[index];
+                        index++;
+                    }
+                }
+                setTimeout(typeText, isFast ? fastSpeed : typingSpeed);
+            } else {
+                consoleDiv.innerHTML += '<span class="cursor"></span>';
+                showInputPrompt();
+            }
+        }
+
+        function showInputPrompt() {
+            consoleDiv.innerHTML += "\nINPUT: RESPUESTA";
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleInput);
+        }
+
+        function handleInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim().toUpperCase();
+                userInput.removeEventListener('keypress', handleInput);
+                userInput.style.display = "none";
+                processResponse(userResponse);
+            }
+        }
+
+        function processResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            if (response === 'SÍ' || response === 'SI' || response === 'YES') {
+                consoleDiv.innerHTML += "\nUQBAR: ¿Cuál herramienta quieres usar? \n[1] ZONA CER0 (Crea una entrada en la ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL). \n[2] Envía tu entrada para la ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL) \n[3] VER ENTRADAS DE LA ENCICLOPEDIA. \n[0] REGRESAR A LA PÁGINA PRINCIPAL.";
+                showInputPromptForTool();
+            } else if (response === '0' || response === 'REGRESAR A LA PÁGINA PRINCIPAL') {
+                window.location.href = 'index.html';
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. POR FAVOR INTENTA DE NUEVO.";
+                showInputPrompt();
+            }
+        }
+
+        function showInputPromptForTool() {
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleToolInput);
+        }
+
+        function handleToolInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim();
+                userInput.removeEventListener('keypress', handleToolInput);
+                userInput.style.display = "none";
+                processToolResponse(userResponse);
+            }
+        }
+
+        function processToolResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            if (response === '1') {
+                consoleDiv.innerHTML += "\nConstructor de futuros: <a href='https://chatgpt.com/g/g-lYWnj6rx6-zona-cer0-constructor-de-futuros' target='_blank'>https://chatgpt.com/g/g-lYWnj6rx6-zona-cer0-constructor-de-futuros</a>";
+                askForAnotherTool();
+            } else if (response === '2' || response === 'Envía tu entrada para la ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL') {
+                window.location.href = 'enviar.html';
+            } else if (response === '3' || response === 'Ver entradas de la ENCICLOPEDIA INTERTEMPORAL DE LA ÚLTIMA ERA NACIONAL') {
+                window.location.href = 'entradas.html';
+            } else if (response === '0' || response === 'REGRESAR A LA PÁGINA PRINCIPAL') {
+                window.location.href = 'index.html';
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. POR FAVOR INTENTA DE NUEVO.";
+                showInputPromptForTool();
+            }
+        }
+
+        function askForAnotherTool() {
+            consoleDiv.innerHTML += "\n¿Quieres usar otra herramienta? [SÍ] [NO]";
+            showInputPromptForAnotherTool();
+        }
+
+        function showInputPromptForAnotherTool() {
+            userInput.style.display = "block";
+            userInput.focus();
+            userInput.addEventListener('keypress', handleAnotherToolInput);
+        }
+
+        function handleAnotherToolInput(event) {
+            if (event.key === 'Enter') {
+                const userResponse = userInput.value.trim().toUpperCase();
+                userInput.removeEventListener('keypress', handleAnotherToolInput);
+                userInput.style.display = "none";
+                processAnotherToolResponse(userResponse);
+            }
+        }
+
+        function processAnotherToolResponse(response) {
+            consoleDiv.innerHTML += "\n" + response;
+            if (response === 'SÍ' || response === 'SI' || response === 'YES') {
+                consoleDiv.innerHTML += "\nUQBAR: ¿Cuál herramienta quieres usar? \n[1] ENSAYAR DESDE LA FICCIÓN. \n[2] ZONA CER0. \n[3] VER ENTRADAS DE LA ENCICLOPEDIA. \n[0] REGRESAR A LA PÁGINA PRINCIPAL.";
+                showInputPromptForTool();
+            } else if (response === 'NO' || response === 'N0') {
+                consoleDiv.innerHTML += "\nHAS CERRADO EL LABORATORIO ESPECULATIVO.";
+            } else {
+                consoleDiv.innerHTML += "\nRESPUESTA NO VÁLIDA. POR FAVOR INTENTA DE NUEVO.";
+                askForAnotherTool();
+            }
+        }
+
+        window.onload = () => {
+            blinkCursor(6, typeText);
+        };
+
+        document.addEventListener('dblclick', () => {
+            isFast = !isFast;
+        });
+    </script>
+</body>
+</html>
