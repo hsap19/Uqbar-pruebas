@@ -58,7 +58,7 @@
     </form>
     
     
-   <script>
+  <script>
     const consoleDiv = document.getElementById('console');
     const dataForm = document.getElementById('dataForm');
     const optionInput = document.getElementById('optionInput');
@@ -101,12 +101,25 @@
             return;
         }
 
-        // **Enviar datos usando cors-anywhere**
-        fetch("https://cors-anywhere.herokuapp.com/https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
+        if (!userInputValue) {
+            alert("Por favor, escribe algo antes de enviar.");
+            return;
+        }
+
+        // **Enviar datos como objeto JSON estructurado**
+        fetch("https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ entry: userInputValue })
-        }).catch(error => console.error("Error en el envío:", error));
+            body: JSON.stringify({ entry: userInputValue }) // Clave "entry" con el texto del usuario
+        })
+        .then(response => {
+            if (response.ok) {
+                console.log("Datos enviados correctamente.");
+            } else {
+                console.error("Error en el envío. Respuesta:", response.statusText);
+            }
+        })
+        .catch(error => console.error("Error en el envío:", error));
 
         // **Redirigir de inmediato**
         setTimeout(() => {
@@ -124,6 +137,7 @@
         typingSpeed = isMaxSpeed ? 2 : 50;
     });
 </script>
+
 
     
 
