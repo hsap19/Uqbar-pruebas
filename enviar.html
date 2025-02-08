@@ -104,15 +104,15 @@
             return;
         }
 
-        // **Enviar datos como un arreglo de objetos**
+        // **Enviar datos como un arreglo con un objeto**
         const formattedData = [
-            { entry: userInputValue } // Convertir a un array de objetos
+            { entry: userInputValue } // Formato esperado por Zapier
         ];
 
         fetch("https://hooks.zapier.com/hooks/catch/21611614/2afimaz/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(formattedData) // Enviar el arreglo
+            body: JSON.stringify(formattedData) // Asegurarse de que sea un array de objetos
         })
         .then(response => {
             if (response.ok) {
